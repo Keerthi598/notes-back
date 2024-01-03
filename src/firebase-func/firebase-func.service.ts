@@ -15,24 +15,10 @@ import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 @Injectable()
 export class FirebaseFuncService {
-    async initializeFirebase() {
-        // const admin = require("firebase-admin");
-        // const serviceAccount = require('../../NotesFireBaseLog.json'); 
-        // Initialize Firebase
-        //const app = admin.initializeApp(firebaseConfig);  
-        // admin.initializeApp({credential: cert(serviceAccount),
-        //      databaseURL: 'https:/notes-a7479.firebaseio.com',
-        //      storageBucket: 'gs://notes-a7479.appspot.com'
-        //     });
-      
-        // const db = getFirestore();
-        //const storage = getStorage();
-        //console.log(storage);
-        //const x = admin.storage().bucket();
-        //x.upload('nest-cli.json');
-        //console.log(x);
-        //const storageRef = admin.ref(storage);
+  private authFire;
 
+
+    initialize() {
         const firebaseConfig = {
           apiKey: "AIzaSyDPPrLPrZBjsggYEGos2PPBJwkw_mjN0ck",
           authDomain: "notes-a7479.firebaseapp.com",
@@ -44,53 +30,97 @@ export class FirebaseFuncService {
         };    
         
         const app = initializeApp(firebaseConfig);
-        
-        const auth = getAuth(app);
-        const email = "zekrom598@gmail.com";
-        const pass = "default";
-        var uid = "";
 
-        signInWithEmailAndPassword(auth, email, pass)
+        this.authFire = getAuth(app);
+
+        return this;
+    }
+
+    async auth(email: string, pass: string) {
+        signInWithEmailAndPassword(this.authFire, email, pass)
         .then((userCredential) => {
           // Signed in 
           const user = userCredential.user;
-          uid = user.uid;
-          // ...
+          console.log("Signed in");
+          return user.uid;
         })
 
         .catch((error) => {
+          // Login failed
           const errorCode = error.code;
           const errorMessage = error.message;
-          console.log("Id/Password incorrect");
+          console.log("Not signed in");
+          return "";
         });
+    }
 
-        const db = getFirestore();
+
+
+
+
+
+    async initializeFirebase() {
+        // const firebaseConfig = {
+        //   apiKey: "AIzaSyDPPrLPrZBjsggYEGos2PPBJwkw_mjN0ck",
+        //   authDomain: "notes-a7479.firebaseapp.com",
+        //   projectId: "notes-a7479",
+        //   storageBucket: "notes-a7479.appspot.com",
+        //   messagingSenderId: "946934545824",
+        //   appId: "1:946934545824:web:86a106b633ca6ce069f8c5",
+        //   measurementId: "G-W8WDYYCDPY"
+        // };    
+        
+        // const app = initializeApp(firebaseConfig);
+        
+        // const auth = getAuth(app);
+        // const email = "zekrom598@gmail.com";
+        // const pass = "default";
+        // var uid = "";
+
+        // signInWithEmailAndPassword(auth, email, pass)
+        // .then((userCredential) => {
+        //   // Signed in 
+        //   const user = userCredential.user;
+        //   uid = user.uid;
+        //   console.log("Signed In");
+        //   // ...
+        // })
+
+        // .catch((error) => {
+        //   const errorCode = error.code;
+        //   const errorMessage = error.message;
+        //   console.log("Id/Password incorrect");
+        // });
+
+        // const db = getFirestore();
         // const data = {
-        //   name: 'Los Angeles',
-        //   state: 'CA',
-        //   country: 'USA '
+        //   names: ["Default"]
         // };
+        // const fol = {
+        //   notesRef: []
+        // }
 
-        const storage = getStorage();
+        // const storage = getStorage();
 
-        // const storageRef = ref(storage, "def/test.txt");
-        // var file = new File([""], "test.txt");
+        //const storageRef = ref(storage, "def/test.txt");
+        //var file = new File([""], "test.txt");
 
-        async function doStuff(){
-          if (uid == "")
-          {
-            setTimeout(doStuff, 50);//wait 50 millisecnds then recheck
-            return;
-          }
+        // async function doStuff(){
+        //   if (uid == "")
+        //   {
+        //     setTimeout(doStuff, 50);//wait 50 millisecnds then recheck
+        //     return;
+        //   }
 
-          //await setDoc(doc(db, uid, "LA"), data);
-          // uploadBytes(storageRef, file).then((snapshot) => {
-          //   console.log('Uploaded a blob or file!');
-          // });
-        }
+        //   // await setDoc(doc(db, uid, "folName"), data);
+        //   // await setDoc(doc(db, uid, "Default"), fol);
+        //   // uploadBytes(storageRef, file).then((snapshot) => {
+        //   //   console.log('Uploaded a blob or file!');
+        //   // });
+        // }
 
-        doStuff();
-        return db;
+        //doStuff();
+        //return db;
     }
 
     async getData(db) { 
@@ -108,6 +138,6 @@ export class FirebaseFuncService {
         // Add a new document in collection "cities" with ID 'LA'
         //const res = (await db).collection('cities').doc('LA').set(data);
 
-
+        return this;
     }
 }
