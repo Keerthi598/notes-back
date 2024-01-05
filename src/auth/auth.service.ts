@@ -3,11 +3,14 @@ import { FirebaseFuncService } from 'src/firebase-func/firebase-func.service';
 
 @Injectable()
 export class AuthService {
+    private loginStatus;
 
-    async login(app) {
-        const email = "zekrom598@gmail.com";
-        const pass = "default";
-
-        const loginStatus = app.auth(email, pass);
+    async login(app, email: string, pass: string) {
+        // email = "zekrom598@gmail.com";
+        // pass = "default";
+        return await app.auth(email, pass);
+        //return await this.loginStatus;
+        //return await app.isUserSignedIn();
     }
+
 }

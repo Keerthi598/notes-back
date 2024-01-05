@@ -5,9 +5,10 @@ import { FirebaseFuncService } from "./firebase-func.service";
 export class FirebaseFuncController {
     constructor(private firebaseFuncService: FirebaseFuncService) {}
 
-    @Get()
-    work() {
-        this.firebaseFuncService.initializeFirebase();
-    }
+    @Get('This')
+    getThis(): string {return "Hi";}
+    // work() {
+    //     this.firebaseFuncService.initializeFirebase();
+    // }
 
 }

@@ -5,19 +5,22 @@ import { AuthService } from './auth/auth.service';
 
 @Injectable()
 export class AppService {
-  private app: FirebaseFuncService;
+    private app: FirebaseFuncService;
 
-  constructor(private fire: FirebaseFuncService, private auth: AuthService){
-    this.app = fire.initialize();
-    const email = "zekrom598@gmail.com";
-    const pass = "default";
-    auth.login(this.app);
-  }
+    constructor(private fire: FirebaseFuncService, private auth: AuthService){
+        this.app = fire.initialize();
+    }
+
+    async logIn(email: string, pass: string) {
+      return await this.auth.login(this.app, email, pass);
+    }
 
 
 
 
-  getHello(): string {
-    return 'Hello World!';
-  }
+
+    getHello(): string {
+        console.log(this.fire.isUserSignedIn());
+        return 'Hello World!';
+    }
 }

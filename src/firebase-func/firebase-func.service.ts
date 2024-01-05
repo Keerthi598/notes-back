@@ -15,7 +15,9 @@ import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 @Injectable()
 export class FirebaseFuncService {
-  private authFire;
+  private authFire: any;
+  private uid: string = "";
+  private userSignedIn: boolean = false;
 
 
     initialize() {
@@ -37,21 +39,25 @@ export class FirebaseFuncService {
     }
 
     async auth(email: string, pass: string) {
-        signInWithEmailAndPassword(this.authFire, email, pass)
+        return signInWithEmailAndPassword(this.authFire, email, pass)
         .then((userCredential) => {
           // Signed in 
           const user = userCredential.user;
-          console.log("Signed in");
-          return user.uid;
+          this.uid = user.uid;
+          this.userSignedIn = true;
+          return true;
         })
 
         .catch((error) => {
           // Login failed
           const errorCode = error.code;
           const errorMessage = error.message;
-          console.log("Not signed in");
-          return "";
+          return false;
         });
+    }
+
+    isUserSignedIn() {
+      return this.userSignedIn;
     }
 
 
