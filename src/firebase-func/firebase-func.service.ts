@@ -8,7 +8,7 @@ import { Injectable } from "@nestjs/common";
 
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword  } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getDoc, getFirestore } from "firebase/firestore";
 import { doc, setDoc, collection, addDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 
@@ -16,6 +16,7 @@ import { getStorage, ref, uploadBytes } from "firebase/storage";
 @Injectable()
 export class FirebaseFuncService {
   private authFire: any;
+  private db: any;
   private uid: string = "";
   private userSignedIn: boolean = false;
 
@@ -56,8 +57,15 @@ export class FirebaseFuncService {
         });
     }
 
-    isUserSignedIn() {
-      return this.userSignedIn;
+
+    async getFoldersAll() {
+        const db = getFirestore();
+
+        const docRef = doc(db, this.uid, "folName");
+        const docSnap = await getDoc(docRef);
+
+
+        return docSnap.data();
     }
 
 

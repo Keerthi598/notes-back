@@ -9,8 +9,6 @@ export class AuthService {
         // email = "zekrom598@gmail.com";
         // pass = "default";
         return await app.auth(email, pass);
-        //return await this.loginStatus;
-        //return await app.isUserSignedIn();
     }
 
 }

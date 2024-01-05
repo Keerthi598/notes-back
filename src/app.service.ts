@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { FirebaseFuncService } from './firebase-func/firebase-func.service';
 import { AuthService } from './auth/auth.service';
+import { UserService } from './user/user.service';
 
 
 @Injectable()
 export class AppService {
     private app: FirebaseFuncService;
 
-    constructor(private fire: FirebaseFuncService, private auth: AuthService){
+    constructor(private fire: FirebaseFuncService, 
+                private auth: AuthService,
+                private user: UserService){
         this.app = fire.initialize();
     }
 
@@ -16,11 +19,12 @@ export class AppService {
     }
 
 
-
+    async getDashInfo(){
+      this.user.getDashInfo(this.app);
+    }
 
 
     getHello(): string {
-        console.log(this.fire.isUserSignedIn());
         return 'Hello World!';
     }
 }

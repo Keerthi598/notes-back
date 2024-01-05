@@ -6,9 +6,14 @@ import { UserAuth } from './dtos/userAuth.dto';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Post()
+  @Post('sign-in')
   async logIn(@Body() userAuth: UserAuth) {
     return await this.appService.logIn(userAuth.email, userAuth.pass);
+  }
+
+  @Get('user-dash')
+  async getDash(){
+    this.appService.getDashInfo();
   }
 
 
