@@ -46,6 +46,7 @@ export class FirebaseFuncService {
           const user = userCredential.user;
           this.uid = user.uid;
           this.userSignedIn = true;
+          this.db = getFirestore();
           return true;
         })
 
@@ -58,15 +59,19 @@ export class FirebaseFuncService {
     }
 
 
-    async getFoldersAll() {
-        const db = getFirestore();
-
-        const docRef = doc(db, this.uid, "folName");
+    async getFoldersAll() {      
+        const docRef = doc(this.db, this.uid, "folName");
         const docSnap = await getDoc(docRef);
-
 
         return docSnap.data();
     }
+
+    // async getFavAll() {
+    //     const docRef = doc(this.db, this.uid, "favorites");
+    //     const docSnap = await getDoc(docRef);
+
+    //     return docSnap.data();
+    // }
 
 
 

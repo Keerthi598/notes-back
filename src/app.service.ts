@@ -20,7 +20,7 @@ export class AppService {
 
 
     async getDashInfo(){
-      this.user.getDashInfo(this.app);
+      return await this.user.getDashInfo(this.app);
     }
 
 

@@ -13,7 +13,7 @@ export class AppController {
 
   @Get('user-dash')
   async getDash(){
-    this.appService.getDashInfo();
+    return await this.appService.getDashInfo();
   }
 
 
