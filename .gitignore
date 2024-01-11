@@ -36,3 +36,4 @@ lerna-debug.log*
 
 
 NotesFireBaseLog.json
+src/auth/constants.ts

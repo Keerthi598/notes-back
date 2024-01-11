@@ -8,10 +8,16 @@ import { UserService } from './user/user.service';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
 
+
 @Module({
   imports: [FirebaseFuncModule, UserModule, AuthModule],
   controllers: [AppController],
-  providers: [AppService, FirebaseFuncService, AuthService, UserService],
+  providers: [
+    AppService,
+    FirebaseFuncService, 
+    AuthService, 
+    UserService,
+  ],
 })
 
 

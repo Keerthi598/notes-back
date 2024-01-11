@@ -1,10 +1,4 @@
-import { Injectable } from "@nestjs/common";
-// import { firestore, initializeApp } from "firebase-admin";
-// import { applicationDefault, cert } from "firebase-admin/app";
-// import { getFirestore, Timestamp, FieldValue, Filter } from "firebase-admin/firestore";
-// import { getStorage } from "firebase-admin/storage";
-// import { getAuth, EmailSignInProviderConfig } from "firebase-admin/auth"
-//import admin from 'firebase-admin';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword  } from "firebase/auth";
@@ -18,7 +12,6 @@ export class FirebaseFuncService {
   private authFire: any;
   private db: any;
   private uid: string = "";
-  private userSignedIn: boolean = false;
 
 
     initialize() {
@@ -45,25 +38,25 @@ export class FirebaseFuncService {
           // Signed in 
           const user = userCredential.user;
           this.uid = user.uid;
-          this.userSignedIn = true;
           this.db = getFirestore();
-          return true;
+          return this.uid;
         })
 
         .catch((error) => {
           // Login failed
           const errorCode = error.code;
           const errorMessage = error.message;
-          return false;
+          throw new UnauthorizedException();
         });
     }
 
 
     async getFoldersAll() {      
-        const docRef = doc(this.db, this.uid, "folName");
-        const docSnap = await getDoc(docRef);
+        // const docRef = doc(this.db, this.uid, "folName");
+        // const docSnap = await getDoc(docRef);
 
-        return docSnap.data();
+        // return docSnap.data();
+        return "";
     }
 
     // async getFavAll() {

@@ -1,14 +1,23 @@
 import { Injectable } from '@nestjs/common';
 import { FirebaseFuncService } from 'src/firebase-func/firebase-func.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-    private loginStatus;
+    constructor(private jwtService: JwtService) {}
 
     async login(app, email: string, pass: string) {
-        // email = "zekrom598@gmail.com";
-        // pass = "default";
-        return await app.auth(email, pass);
+        try {
+            const success = await app.auth(email, pass);
+            console.log("Yeah");
+            const payload = { sub: success };
+
+            return { access_token: await this.jwtService.signAsync(payload) };
+        } catch (error) {
+            console.log(";_:");
+            // Handle the error or throw it again if needed
+            //throw error;
+        }
     }
 
 }
