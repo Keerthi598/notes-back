@@ -11,7 +11,6 @@ import { getStorage, ref, uploadBytes } from "firebase/storage";
 export class FirebaseFuncService {
   private authFire: any;
   private db: any;
-  private uid: string = "";
 
 
     initialize() {
@@ -28,6 +27,7 @@ export class FirebaseFuncService {
         const app = initializeApp(firebaseConfig);
 
         this.authFire = getAuth(app);
+        this.db = getFirestore();
 
         return this;
     }
@@ -37,9 +37,7 @@ export class FirebaseFuncService {
         .then((userCredential) => {
           // Signed in 
           const user = userCredential.user;
-          this.uid = user.uid;
-          this.db = getFirestore();
-          return this.uid;
+          return user.uid;
         })
 
         .catch((error) => {
@@ -50,14 +48,29 @@ export class FirebaseFuncService {
         });
     }
 
-
-    async getFoldersAll() {      
-        // const docRef = doc(this.db, this.uid, "folName");
-        // const docSnap = await getDoc(docRef);
-
-        // return docSnap.data();
-        return "";
+    async getDisplayNotes(uid: string, folder: string) {
+        const docRef = doc(this.db, uid, folder);
+        const docSnap = await getDoc(docRef);
+        
+        return docSnap.data();
     }
+
+    async getFoldersAll(uid: string) {
+
+        const docRef = doc(this.db, uid, "folName");
+        const docSnap = await getDoc(docRef);
+        
+        return docSnap.data();
+    }
+
+
+    // async getFoldersAll() {      
+    //     // const docRef = doc(this.db, this.uid, "folName");
+    //     // const docSnap = await getDoc(docRef);
+
+    //     // return docSnap.data();
+    //     return "";
+    // }
 
     // async getFavAll() {
     //     const docRef = doc(this.db, this.uid, "favorites");

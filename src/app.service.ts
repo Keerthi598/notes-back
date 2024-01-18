@@ -19,8 +19,11 @@ export class AppService {
     }
 
 
-    async getDashInfo(){
-      return await this.user.getDashInfo(this.app);
+    async getDashInfo(access_token: string){
+      const uid = await this.auth.verify(this.app, access_token);
+
+      //return uid.sub;
+      return await this.user.getDashInfo(this.app, uid.sub);
     }
 
 
