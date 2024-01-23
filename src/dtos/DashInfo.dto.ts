@@ -1,4 +1,4 @@
-export class DashInfo {
+export class FoldersAll {
     //fav: Array<Array<string>>;
-    folder: Array<string>;
+    folders: Array<string>;
 }

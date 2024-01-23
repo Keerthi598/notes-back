@@ -16,7 +16,7 @@ export class AuthService {
                 "access_token": await this.jwtService.signAsync(payload),
             };
         } catch (error) {
-            console.log(";_:");
+            console.log(pass);
             return { "message": false} ;
             // Handle the error or throw it again if needed
             //throw error;

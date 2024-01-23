@@ -1,4 +1,5 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { response } from "express";
 
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword  } from "firebase/auth";
@@ -63,23 +64,26 @@ export class FirebaseFuncService {
         return docSnap.data();
     }
 
+    async createFolder(uid: string, folderName: string) {
+        const newFolder = { notesRef : [] };
 
-    // async getFoldersAll() {      
-    //     // const docRef = doc(this.db, this.uid, "folName");
-    //     // const docSnap = await getDoc(docRef);
+        await setDoc(doc(this.db, uid, folderName), newFolder);
 
-    //     // return docSnap.data();
-    //     return "";
-    // }
-
-    // async getFavAll() {
-    //     const docRef = doc(this.db, this.uid, "favorites");
-    //     const docSnap = await getDoc(docRef);
-
-    //     return docSnap.data();
-    // }
-
-
+        // return (await this.getFoldersAll(uid))
+        // .then((currFol: Array<string>) => {
+        //     currFol.push(folderName);
+        //     setDoc(doc(this.db, uid, "folName"), currFol);
+        //     return true;
+        //   }
+        // )
+        // .catch((error) => {
+        //   return false;
+        // });
+        var currFol = await this.getFoldersAll(uid);
+        currFol.names.push(folderName);
+        await setDoc(doc(this.db, uid, "folName"), currFol);
+        return true;
+    }
 
 
 

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { FirebaseFuncService } from 'src/firebase-func/firebase-func.service';
-import { DashInfo } from 'src/dtos/DashInfo.dto';
 
 @Injectable()
 export class UserService {
@@ -14,15 +13,25 @@ export class UserService {
         // var favResp = await app.getFavAll();
         // var favorites: Array<Array<string>> = await favResp.fav;
 
-        var folContent = await app.getDisplayNotes(uid, "Default");
-        var folContentTest = await folContent.notesRef;
+        // var folContent = await app.getDisplayNotes(uid, "Default");
+        // var folContentTest = await folContent.notesRef;
 
         return {
-            "names" : folder,
-            "info" : folContentTest,
+            "names" : folder
         };
     }
 
-    
+    async getFolderFiles(app, uid: string, folder: string) {
+        var fol = await app.getDisplayNotes(uid, folder);
+        var folFiles = await fol.notesRef;
+
+        return {
+            folder : folFiles
+        };
+    }
+
+    async createFolder(app, uid: string, folderName: string) {
+        return await app.createFolder(uid, folderName);
+    }
 
 }

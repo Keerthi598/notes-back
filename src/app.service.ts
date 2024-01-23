@@ -10,7 +10,7 @@ export class AppService {
 
     constructor(private fire: FirebaseFuncService, 
                 private auth: AuthService,
-                private user: UserService){
+                private user: UserService) {
         this.app = fire.initialize();
     }
 
@@ -19,11 +19,23 @@ export class AppService {
     }
 
 
-    async getDashInfo(access_token: string){
+    async getDashInfo(access_token: string) {
       const uid = await this.auth.verify(this.app, access_token);
 
       //return uid.sub;
       return await this.user.getDashInfo(this.app, uid.sub);
+    }
+
+    async getFolderFiles(access_token: string, folder: string) {
+      const uid = await this.auth.verify(this.app, access_token);
+
+      return await this.user.getFolderFiles(this.app, uid.sub, folder);
+    }
+
+    async createFolder(access_token: string, folderName: string) {
+      const uid = await this.auth.verify(this.app, access_token);
+
+      return await this.user.createFolder(this.app, uid.sub, folderName);
     }
 
 

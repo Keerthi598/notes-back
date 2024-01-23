@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AppService } from './app.service';
 import { UserAuth } from './dtos/userAuth.dto';
 import { JwtDto } from './dtos/Jwt.dto';
+import { UserFolder } from './dtos/UserFolder.dto';
 
 @Controller()
 export class AppController {
@@ -19,14 +20,18 @@ export class AppController {
     }
   }
 
-  @Get('user-dash')
+  @Post('user-dash')
   async getDash(@Body() jwtToken: JwtDto){
     return await this.appService.getDashInfo(jwtToken.access_token);
   }
 
+  @Post('folder-files')
+  async getFolderFile(@Body() folderInfo: UserFolder){
+    return await this.appService.getFolderFiles(folderInfo.access_token, folderInfo.folder);
+  }
 
-  @Get()
-  getHello(): string {  
-    return this.appService.getHello();
+  @Post('create-folder')
+  async createFolder(@Body() folderInfo: UserFolder){
+    return await this.appService.createFolder(folderInfo.access_token, folderInfo.folder);
   }
 }
