@@ -34,4 +34,9 @@ export class AppController {
   async createFolder(@Body() folderInfo: UserFolder){
     return await this.appService.createFolder(folderInfo.access_token, folderInfo.folder);
   }
+
+  @Post('create-file')
+  async createFile(@Body() folderInfo: UserFolder){
+    return await this.appService.createFile(folderInfo.access_token, folderInfo.folder);
+  }
 }

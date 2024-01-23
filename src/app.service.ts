@@ -38,8 +38,10 @@ export class AppService {
       return await this.user.createFolder(this.app, uid.sub, folderName);
     }
 
+    async createFile(access_token: string, folderName: string) {
+      const uid = await this.auth.verify(this.app, access_token);
 
-    getHello(): string {
-        return 'Hello World!';
+      return await this.user.createFile(this.app, uid.sub, folderName);
     }
+    
 }

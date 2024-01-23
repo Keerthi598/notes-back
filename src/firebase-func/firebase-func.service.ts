@@ -1,17 +1,19 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { response } from "express";
-
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword  } from "firebase/auth";
 import { getDoc, getFirestore } from "firebase/firestore";
 import { doc, setDoc, collection, addDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { Timestamp } from "firebase/firestore";
+
 
 
 @Injectable()
 export class FirebaseFuncService {
   private authFire: any;
   private db: any;
+  private storage: any;
 
 
     initialize() {
@@ -29,6 +31,7 @@ export class FirebaseFuncService {
 
         this.authFire = getAuth(app);
         this.db = getFirestore();
+        this.storage = getStorage();
 
         return this;
     }
@@ -69,22 +72,45 @@ export class FirebaseFuncService {
 
         await setDoc(doc(this.db, uid, folderName), newFolder);
 
-        // return (await this.getFoldersAll(uid))
-        // .then((currFol: Array<string>) => {
-        //     currFol.push(folderName);
-        //     setDoc(doc(this.db, uid, "folName"), currFol);
-        //     return true;
-        //   }
-        // )
-        // .catch((error) => {
-        //   return false;
-        // });
         var currFol = await this.getFoldersAll(uid);
         currFol.names.push(folderName);
         await setDoc(doc(this.db, uid, "folName"), currFol);
         return true;
     }
 
+    async createFile(uid: string, folderName: string, file: string) {
+        //
+        // Add file details to folder
+        //
+        var time = Timestamp;
+
+        const data = {
+          date: time.now(),
+          fileId: file,
+          folder: folderName,
+          noteHead: ""
+        };
+
+        const docRef = doc(this.db, uid, folderName);
+        const docSnap = await getDoc(docRef);
+
+        var newData = docSnap.data();
+        newData.notesRef.push(data);
+
+        await setDoc(doc(this.db, uid, folderName), newData);
+
+        //
+        // Create new file and add to storage
+        // "def/test.txt"
+        const storageRef = ref(this.storage, uid + "/" + folderName + "/" + file);
+        var emptyFile = new File([""], file);
+
+        uploadBytes(storageRef, emptyFile);
+        // .then((snapshot) => {
+        //   console.log('Uploaded a blob or file!');
+        // });
+        return emptyFile;
+    }
 
 
 

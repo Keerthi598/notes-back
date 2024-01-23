@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { FirebaseFuncService } from 'src/firebase-func/firebase-func.service';
+import { nanoid } from 'nanoid';
 
 @Injectable()
 export class UserService {
@@ -32,6 +33,24 @@ export class UserService {
 
     async createFolder(app, uid: string, folderName: string) {
         return await app.createFolder(uid, folderName);
+    }
+
+    async createFile(app, uid: string, folderName: string) {
+        var tempFileId = nanoid(16);
+
+        tempFileId += ".txt";
+        
+        // Add to folder
+        var newFile =  await app.createFile(uid, folderName, tempFileId);
+
+        // Add to database
+
+
+        return {
+            fileId: tempFileId,
+            folder: folderName,
+            file: newFile,
+        };
     }
 
 }
