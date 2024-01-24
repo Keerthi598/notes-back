@@ -3,6 +3,7 @@ import { AppService } from './app.service';
 import { UserAuth } from './dtos/userAuth.dto';
 import { JwtDto } from './dtos/Jwt.dto';
 import { UserFolder } from './dtos/UserFolder.dto';
+import { GetFile } from './dtos/GetFile.dto';
 
 @Controller()
 export class AppController {
@@ -39,4 +40,10 @@ export class AppController {
   async createFile(@Body() folderInfo: UserFolder){
     return await this.appService.createFile(folderInfo.access_token, folderInfo.folder);
   }
+
+  @Post('get-file')
+  async getFile(@Body() fileInfo: GetFile){
+    return await this.appService.getFile(fileInfo.access_token, fileInfo.folder, fileInfo.fileId);
+  }
+
 }

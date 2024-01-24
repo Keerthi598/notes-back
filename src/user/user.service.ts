@@ -53,4 +53,10 @@ export class UserService {
         };
     }
 
+    async getFile(app, uid: string, folderName: string, fileId: string){
+        fileId += ".txt";
+
+        return true;
+    }
+
 }

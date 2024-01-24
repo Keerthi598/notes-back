@@ -43,5 +43,11 @@ export class AppService {
 
       return await this.user.createFile(this.app, uid.sub, folderName);
     }
+
+    async getFile(access_token: string, folderName: string, fileId: string) {
+      const uid = await this.auth.verify(this.app, access_token);
+
+      return await this.user.getFile(this.app, uid.sub, folderName, fileId);
+    }
     
 }

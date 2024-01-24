@@ -112,6 +112,12 @@ export class FirebaseFuncService {
         return emptyFile;
     }
 
+    async getFileInfo(uid: string, folderName: string, fileId: string) {
+      const storageRef = ref(this.storage, uid + "/" + folderName + "/" + fileId);
+      
+
+    }
+
 
 
     async initializeFirebase() {
