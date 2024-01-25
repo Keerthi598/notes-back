@@ -46,8 +46,12 @@ export class AppService {
 
     async getFile(access_token: string, folderName: string, fileId: string) {
       const uid = await this.auth.verify(this.app, access_token);
-
       return await this.user.getFile(this.app, uid.sub, folderName, fileId);
+    }
+
+    async uploadFile(access_token: string, folderName: string, fileId: string, content: string) {
+      const uid = await this.auth.verify(this.app, access_token);
+      return await this.user.uploadFile(this.app, uid.sub, folderName, fileId, content);
     }
     
 }

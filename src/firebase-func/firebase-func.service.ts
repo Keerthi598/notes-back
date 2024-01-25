@@ -4,8 +4,10 @@ import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword  } from "firebase/auth";
 import { getDoc, getFirestore } from "firebase/firestore";
 import { doc, setDoc, collection, addDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { Timestamp } from "firebase/firestore";
+import axios from 'axios';
+
 
 
 
@@ -14,6 +16,8 @@ export class FirebaseFuncService {
   private authFire: any;
   private db: any;
   private storage: any;
+
+    constructor() {}
 
 
     initialize() {
@@ -113,9 +117,25 @@ export class FirebaseFuncService {
     }
 
     async getFileInfo(uid: string, folderName: string, fileId: string) {
-      const storageRef = ref(this.storage, uid + "/" + folderName + "/" + fileId);
+        const storageRef = ref(this.storage, uid + "/" + folderName + "/" + fileId);
+        var url = await getDownloadURL(storageRef);
       
+        const response = await axios.get(url, {responseType: 'arraybuffer'})
+        return Buffer.from(response.data, 'binary');
+        //return { "file" : response}
+        //return await this.httpService.get(url);
+    }
 
+    async upFileInfo(uid: string, folderName: string, fileId: string, content: string) {
+        // Upload File
+        const storageRef = ref(this.storage, uid + "/" + folderName + "/" + fileId);
+        var currFile = new File([content], fileId);
+        uploadBytes(storageRef, currFile);
+
+        // Update timestamp and NoteHead
+        // Pending
+
+        return true;
     }
 
 

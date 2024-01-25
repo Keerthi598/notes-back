@@ -56,7 +56,12 @@ export class UserService {
     async getFile(app, uid: string, folderName: string, fileId: string){
         fileId += ".txt";
 
-        return true;
+        return app.getFileInfo(uid, folderName, fileId);
     }
 
+    async uploadFile(app, uid: string, folderName: string, fileId: string, content: string) {
+        fileId += ".txt";
+
+        return app.upFileInfo(uid, folderName, fileId, content);
+    }
 }

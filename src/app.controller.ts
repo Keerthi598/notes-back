@@ -4,6 +4,7 @@ import { UserAuth } from './dtos/userAuth.dto';
 import { JwtDto } from './dtos/Jwt.dto';
 import { UserFolder } from './dtos/UserFolder.dto';
 import { GetFile } from './dtos/GetFile.dto';
+import { UploadFile } from './dtos/UploadFile.dto';
 
 @Controller()
 export class AppController {
@@ -46,4 +47,8 @@ export class AppController {
     return await this.appService.getFile(fileInfo.access_token, fileInfo.folder, fileInfo.fileId);
   }
 
+  @Post('upload-file')
+  async uplaodFile(@Body() fileInfo: UploadFile){
+    return await this.appService.uploadFile(fileInfo.access_token, fileInfo.folder, fileInfo.fileId, fileInfo.content);
+  }
 }
