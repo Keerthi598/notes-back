@@ -4,6 +4,7 @@ import { nanoid } from 'nanoid';
 
 @Injectable()
 export class UserService {
+    // All folders for the user
     async getDashInfo(app, uid: string){
 
         var folResp = await app.getFoldersAll(uid);
@@ -22,15 +23,17 @@ export class UserService {
         };
     }
 
+    // All files in one specific folder
     async getFolderFiles(app, uid: string, folder: string) {
         var fol = await app.getDisplayNotes(uid, folder);
-        var folFiles = await fol.notesRef;
+        var folFiles = await fol.notesRefMap;
 
         return {
             folder : folFiles
         };
     }
 
+    
     async createFolder(app, uid: string, folderName: string) {
         return await app.createFolder(uid, folderName);
     }
@@ -40,11 +43,7 @@ export class UserService {
 
         tempFileId += ".txt";
         
-        // Add to folder
         var newFile =  await app.createFile(uid, folderName, tempFileId);
-
-        // Add to database
-
 
         return {
             fileId: tempFileId,

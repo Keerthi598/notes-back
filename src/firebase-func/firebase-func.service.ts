@@ -56,6 +56,7 @@ export class FirebaseFuncService {
         });
     }
 
+    // All Files in a folder
     async getDisplayNotes(uid: string, folder: string) {
         const docRef = doc(this.db, uid, folder);
         const docSnap = await getDoc(docRef);
@@ -63,6 +64,7 @@ export class FirebaseFuncService {
         return docSnap.data();
     }
 
+    // All folders the user has
     async getFoldersAll(uid: string) {
 
         const docRef = doc(this.db, uid, "folName");
@@ -71,6 +73,7 @@ export class FirebaseFuncService {
         return docSnap.data();
     }
 
+    // Cretae empty folder
     async createFolder(uid: string, folderName: string) {
         const newFolder = { notesRef : [] };
 
@@ -82,6 +85,7 @@ export class FirebaseFuncService {
         return true;
     }
 
+    // Create empty file
     async createFile(uid: string, folderName: string, file: string) {
         //
         // Add file details to folder
@@ -90,7 +94,6 @@ export class FirebaseFuncService {
 
         const data = {
           date: time.now(),
-          fileId: file,
           folder: folderName,
           noteHead: ""
         };
@@ -99,7 +102,7 @@ export class FirebaseFuncService {
         const docSnap = await getDoc(docRef);
 
         var newData = docSnap.data();
-        newData.notesRef.push(data);
+        newData.notesRefMap[file] = data;
 
         await setDoc(doc(this.db, uid, folderName), newData);
 
@@ -110,12 +113,10 @@ export class FirebaseFuncService {
         var emptyFile = new File([""], file);
 
         uploadBytes(storageRef, emptyFile);
-        // .then((snapshot) => {
-        //   console.log('Uploaded a blob or file!');
-        // });
         return emptyFile;
     }
 
+    // Get the file contents of a specific file
     async getFileInfo(uid: string, folderName: string, fileId: string) {
         const storageRef = ref(this.storage, uid + "/" + folderName + "/" + fileId);
         var url = await getDownloadURL(storageRef);
@@ -126,99 +127,40 @@ export class FirebaseFuncService {
         //return await this.httpService.get(url);
     }
 
-    async upFileInfo(uid: string, folderName: string, fileId: string, content: string) {
+    // Update one specific file
+    async upFileInfo(uid: string, folderName: string, fileIdCurr: string, content: string) {
         // Upload File
-        const storageRef = ref(this.storage, uid + "/" + folderName + "/" + fileId);
-        var currFile = new File([content], fileId);
-        uploadBytes(storageRef, currFile);
+        const storageRef = ref(this.storage, uid + "/" + folderName + "/" + fileIdCurr);
+        var currFile = new File([content], fileIdCurr);
+        await uploadBytes(storageRef, currFile);
 
         // Update timestamp and NoteHead
         // Pending
+        var time = Timestamp;
+        var noteHeadCurr: string = "";
+        if (content.length <= 50){
+            noteHeadCurr = content;
+        }
+        else {
+            noteHeadCurr = content.slice(0, 50);
+        }
+
+        const data = {
+            date: time.now(),
+            folder: folderName,
+            noteHead: noteHeadCurr,
+        };
+        
+        await this.getDisplayNotes(uid, folderName).then(
+            (allFilesResp) => {
+                //var allFiles = allFilesResp.notesRefMap;
+                allFilesResp.notesRefMap[fileIdCurr] = data;
+
+                setDoc(doc(this.db, uid, folderName), allFilesResp);
+            }
+        )
 
         return true;
     }
 
-
-
-    async initializeFirebase() {
-        // const firebaseConfig = {
-        //   apiKey: "AIzaSyDPPrLPrZBjsggYEGos2PPBJwkw_mjN0ck",
-        //   authDomain: "notes-a7479.firebaseapp.com",
-        //   projectId: "notes-a7479",
-        //   storageBucket: "notes-a7479.appspot.com",
-        //   messagingSenderId: "946934545824",
-        //   appId: "1:946934545824:web:86a106b633ca6ce069f8c5",
-        //   measurementId: "G-W8WDYYCDPY"
-        // };    
-        
-        // const app = initializeApp(firebaseConfig);
-        
-        // const auth = getAuth(app);
-        // const email = "zekrom598@gmail.com";
-        // const pass = "default";
-        // var uid = "";
-
-        // signInWithEmailAndPassword(auth, email, pass)
-        // .then((userCredential) => {
-        //   // Signed in 
-        //   const user = userCredential.user;
-        //   uid = user.uid;
-        //   console.log("Signed In");
-        //   // ...
-        // })
-
-        // .catch((error) => {
-        //   const errorCode = error.code;
-        //   const errorMessage = error.message;
-        //   console.log("Id/Password incorrect");
-        // });
-
-        // const db = getFirestore();
-        // const data = {
-        //   names: ["Default"]
-        // };
-        // const fol = {
-        //   notesRef: []
-        // }
-
-        // const storage = getStorage();
-
-        //const storageRef = ref(storage, "def/test.txt");
-        //var file = new File([""], "test.txt");
-
-        // async function doStuff(){
-        //   if (uid == "")
-        //   {
-        //     setTimeout(doStuff, 50);//wait 50 millisecnds then recheck
-        //     return;
-        //   }
-
-        //   // await setDoc(doc(db, uid, "folName"), data);
-        //   // await setDoc(doc(db, uid, "Default"), fol);
-        //   // uploadBytes(storageRef, file).then((snapshot) => {
-        //   //   console.log('Uploaded a blob or file!');
-        //   // });
-        // }
-
-        //doStuff();
-        //return db;
-    }
-
-    async getData(db) { 
-
-        // const snapshot = (await db).collection('notes').get();
-        // (await snapshot).forEach((doc) => {
-        //     console.log(doc.id, '=>', doc.data());
-        //   });
-        // Works
-        // const data = {
-        //   name: 'Los Angeles',
-        //   state: 'CA',
-        //   country: 'USA'
-        // };
-        // Add a new document in collection "cities" with ID 'LA'
-        //const res = (await db).collection('cities').doc('LA').set(data);
-
-        return this;
-    }
 }
