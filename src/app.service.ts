@@ -18,6 +18,12 @@ export class AppService {
       return await this.auth.login(this.app, email, pass);
     }
 
+    async getDashBoard(access_token: string) {
+      const uid = await this.auth.verify(this.app, access_token);
+
+      return await this.user.getDashFolders(this.app, uid.sub);
+    }
+
 
     async getFolAll(access_token: string) {
       const uid = await this.auth.verify(this.app, access_token);

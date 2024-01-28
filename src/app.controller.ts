@@ -27,6 +27,12 @@ export class AppController {
     return await this.appService.getFolAll(jwtToken.access_token);
   }
 
+
+  @Post('user-dash')
+  async getDashFolders(@Body() jwtToken: JwtDto) {
+    return await this.appService.getDashBoard(jwtToken.access_token);
+  }
+
   @Post('user-fav')
   async getAllFav(@Body() jwtToken: JwtDto) {
     return await this.appService.getFavAll(jwtToken.access_token);

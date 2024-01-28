@@ -178,6 +178,7 @@ export class FirebaseFuncService {
             noteHead: noteHeadCurr,
             favorite: false,
         };
+
         
         await this.getDisplayNotes(uid, folderName).then(
             (allFilesResp) => {
@@ -186,6 +187,8 @@ export class FirebaseFuncService {
                 setDoc(doc(this.db, uid, folderName), allFilesResp);
             }
         )
+
+        await this.UpdateDash(uid, fileIdCurr, data);
 
         return true;
     }
@@ -226,9 +229,51 @@ export class FirebaseFuncService {
             }
         )
 
+        await this.UpdateDash(uid, fileIdCurr, data);
+
         return true;
     }
 
     
+
+
+    async UpdateDash(uid: string, fileIdCurr: string, data) {
+        var currDashResp = await this.getDashFiles(uid);
+        var currDash = await currDashResp.dashRef;
+
+        const newData = {
+            fileId: fileIdCurr,
+            content: data,
+        }
+
+        var match = -1
+        // Max items in dashboard is 10
+        for(let i = 0; i < currDash.length && i < 10; i++) {
+            if (currDash[i].fileId == fileIdCurr){
+                match = i;
+                break;
+            }
+        }
+
+        // If file is not in dashboard
+        if (match == -1) {
+            for(let i = currDash.length - 1; i >= 0; i--) {
+                currDash[i + 1] = currDash[i];
+            }
+        }
+
+        // If file is not the first file in the dashboard
+        else if(match > 0) {
+            for(let i = match - 1; i >= 0; i--) {
+                currDash[i + 1] = currDash[i];
+            }
+        }
+
+        currDash[0] = newData;
+        currDashResp.dashRef = currDash;
+        await setDoc(doc(this.db, uid, "DashBoard"), currDashResp);
+        return;
+
+    }
 
 }

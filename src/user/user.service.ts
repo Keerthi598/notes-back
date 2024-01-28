@@ -15,6 +15,17 @@ export class UserService {
         };
     }
 
+
+    async getDashFolders(app, uid: string) {
+        var dashFilesResp = await app.getDashFiles(uid);
+        var dashfiles = await dashFilesResp.dashRef;
+
+        return {
+            "dashFiles" : dashfiles
+        };
+    }
+
+
     async getAllFav(app, uid: string) {
         var favResp = await app.getFavAll(uid);
         var favFol = await favResp.favFileMap;
