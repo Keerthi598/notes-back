@@ -19,10 +19,16 @@ export class AppService {
     }
 
 
-    async getDashInfo(access_token: string) {
+    async getFolAll(access_token: string) {
       const uid = await this.auth.verify(this.app, access_token);
 
-      return await this.user.getDashInfo(this.app, uid.sub);
+      return await this.user.getAllUserFolders(this.app, uid.sub);
+    }
+
+    async getFavAll(access_token: string) {
+      const uid = await this.auth.verify(this.app, access_token);
+
+      return await this.user.getAllFav(this.app, uid.sub);
     }
 
     async getFolderFiles(access_token: string, folder: string) {
@@ -48,9 +54,15 @@ export class AppService {
       return await this.user.getFile(this.app, uid.sub, folderName, fileId);
     }
 
-    async uploadFile(access_token: string, folderName: string, fileId: string, content: string) {
+    async uploadFile(access_token: string, folderName: string, fileId: string, content: string, isFavorite: boolean) {
       const uid = await this.auth.verify(this.app, access_token);
-      return await this.user.uploadFile(this.app, uid.sub, folderName, fileId, content);
+      return await this.user.uploadFile(this.app, uid.sub, folderName, fileId, content, isFavorite);
     }
+
+    async toggleFav(access_token: string, folderName: string, fileId: string, content: string, isFavorite: boolean) {
+      const uid = await this.auth.verify(this.app, access_token);
+      return await this.user.toggleFav(this.app, uid.sub, folderName, fileId, content, isFavorite);
+    }
+
     
 }

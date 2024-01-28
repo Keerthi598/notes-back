@@ -5,21 +5,22 @@ import { nanoid } from 'nanoid';
 @Injectable()
 export class UserService {
     // All folders for the user
-    async getDashInfo(app, uid: string){
+    async getAllUserFolders(app, uid: string){
 
         var folResp = await app.getFoldersAll(uid);
         var folder = await folResp.names;
 
-        // Favorites to be done later
-        // after note heads works perfectly
-        // var favResp = await app.getFavAll();
-        // var favorites: Array<Array<string>> = await favResp.fav;
-
-        // var folContent = await app.getDisplayNotes(uid, "Default");
-        // var folContentTest = await folContent.notesRef;
-
         return {
             "names" : folder
+        };
+    }
+
+    async getAllFav(app, uid: string) {
+        var favResp = await app.getFavAll(uid);
+        var favFol = await favResp.favFileMap;
+
+        return {
+            folder: favFol
         };
     }
 
@@ -55,12 +56,27 @@ export class UserService {
     async getFile(app, uid: string, folderName: string, fileId: string){
         fileId += ".txt";
 
-        return app.getFileInfo(uid, folderName, fileId);
+        return {
+            fileData: await app.getFileInfo(uid, folderName, fileId),
+            fileMetaData: await app.getFileMetaData(uid, folderName, fileId),
+        }
     }
 
-    async uploadFile(app, uid: string, folderName: string, fileId: string, content: string) {
+    async uploadFile(app, uid: string, folderName: string, fileId: string, content: string, isFavorite: boolean) {
         fileId += ".txt";
 
-        return app.upFileInfo(uid, folderName, fileId, content);
+        return app.upFileInfo(uid, folderName, fileId, content, isFavorite);
+    }
+
+    async toggleFav(app, uid: string, folderName: string, fileId: string, content: string, isFavorite: boolean) {
+        fileId += ".txt";
+
+        if(isFavorite)
+        {
+            
+            app.toggleIsFavorite(uid, folderName, fileId, content);
+            return true;
+        }
+        return true;
     }
 }

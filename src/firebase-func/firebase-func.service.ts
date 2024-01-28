@@ -73,9 +73,24 @@ export class FirebaseFuncService {
         return docSnap.data();
     }
 
+    //All the files in teh favorite folder
+    async getFavAll(uid: string) {
+        const docRef = doc(this.db, uid, "favorites");
+        const docSnap = await getDoc(docRef);
+        
+        return docSnap.data();
+    }
+
+    async getDashFiles(uid: string) {
+        const docRef = doc(this.db, uid, "DashBoard");
+        const docSnap = await getDoc(docRef);
+
+        return docSnap.data();
+    }
+
     // Cretae empty folder
     async createFolder(uid: string, folderName: string) {
-        const newFolder = { notesRef : [] };
+        const newFolder = { notesRefMap : {} };
 
         await setDoc(doc(this.db, uid, folderName), newFolder);
 
@@ -95,7 +110,8 @@ export class FirebaseFuncService {
         const data = {
           date: time.now(),
           folder: folderName,
-          noteHead: ""
+          noteHead: "",
+          favorite: false,
         };
 
         const docRef = doc(this.db, uid, folderName);
@@ -122,17 +138,26 @@ export class FirebaseFuncService {
         var url = await getDownloadURL(storageRef);
       
         const response = await axios.get(url, {responseType: 'arraybuffer'})
-        return Buffer.from(response.data, 'binary');
-        //return { "file" : response}
-        //return await this.httpService.get(url);
+        return await Buffer.from(response.data, 'binary');
+    }
+
+    async getFileMetaData(uid: string, folderName: string, fileId: string) {
+        var allFiles = await this.getDisplayNotes(uid, folderName);
+
+        return await allFiles.notesRefMap[fileId];
     }
 
     // Update one specific file
-    async upFileInfo(uid: string, folderName: string, fileIdCurr: string, content: string) {
+    async upFileInfo(uid: string, folderName: string, fileIdCurr: string, content: string, fav: boolean) {
         // Upload File
         const storageRef = ref(this.storage, uid + "/" + folderName + "/" + fileIdCurr);
         var currFile = new File([content], fileIdCurr);
         await uploadBytes(storageRef, currFile);
+
+        if (fav) {
+            this.toggleIsFavorite(uid, folderName, fileIdCurr, content);
+            return true;
+        }
 
         // Update timestamp and NoteHead
         // Pending
@@ -145,15 +170,17 @@ export class FirebaseFuncService {
             noteHeadCurr = content.slice(0, 50);
         }
 
+        noteHeadCurr += "...";
+
         const data = {
             date: time.now(),
             folder: folderName,
             noteHead: noteHeadCurr,
+            favorite: false,
         };
         
         await this.getDisplayNotes(uid, folderName).then(
             (allFilesResp) => {
-                //var allFiles = allFilesResp.notesRefMap;
                 allFilesResp.notesRefMap[fileIdCurr] = data;
 
                 setDoc(doc(this.db, uid, folderName), allFilesResp);
@@ -162,5 +189,46 @@ export class FirebaseFuncService {
 
         return true;
     }
+
+
+
+    async toggleIsFavorite(uid: string, folderName: string, fileIdCurr: string, content: string) {
+        var time = Timestamp;
+        var noteHeadCurr: string = "";
+        if (content.length <= 50){
+            noteHeadCurr = content;
+        }
+        else {
+            noteHeadCurr = content.slice(0, 50);
+        }
+        noteHeadCurr += "...";
+
+        const data = {
+            date: time.now(),
+            folder: folderName,
+            noteHead: noteHeadCurr,
+            favorite: true,
+        }
+        
+        await this.getDisplayNotes(uid, folderName).then(
+            (allFilesResp) => {
+                allFilesResp.notesRefMap[fileIdCurr] = data;
+
+                setDoc(doc(this.db, uid, folderName), allFilesResp);
+            }
+        )
+
+        await this.getDisplayNotes(uid, "favorites").then(
+            (favFilesResp) => {
+                favFilesResp.favFileMap[fileIdCurr] = data;
+
+                setDoc(doc(this.db, uid, "favorites"), favFilesResp);
+            }
+        )
+
+        return true;
+    }
+
+    
 
 }

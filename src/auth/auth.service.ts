@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { FirebaseFuncService } from 'src/firebase-func/firebase-func.service';
 import { JwtService } from '@nestjs/jwt';
+import { error } from 'console';
+import { scryptSync } from 'crypto';
 
 @Injectable()
 export class AuthService {
@@ -16,15 +18,17 @@ export class AuthService {
                 "access_token": await this.jwtService.signAsync(payload),
             };
         } catch (error) {
-            console.log(pass);
             return { "message": false} ;
-            // Handle the error or throw it again if needed
-            //throw error;
         }
     }
 
     async verify(app, access_token: string) {
-        return await this.jwtService.decode(access_token);
+        try {
+            return await this.jwtService.verifyAsync(access_token);
+        } catch (error) {
+            throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+        }
+
     }
 
 }

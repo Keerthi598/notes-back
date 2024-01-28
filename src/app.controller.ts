@@ -22,9 +22,14 @@ export class AppController {
     }
   }
 
-  @Post('user-dash')
-  async getDash(@Body() jwtToken: JwtDto){
-    return await this.appService.getDashInfo(jwtToken.access_token);
+  @Post('user-fol')
+  async getAllFol(@Body() jwtToken: JwtDto){
+    return await this.appService.getFolAll(jwtToken.access_token);
+  }
+
+  @Post('user-fav')
+  async getAllFav(@Body() jwtToken: JwtDto) {
+    return await this.appService.getFavAll(jwtToken.access_token);
   }
 
   @Post('folder-files')
@@ -49,6 +54,11 @@ export class AppController {
 
   @Post('upload-file')
   async uplaodFile(@Body() fileInfo: UploadFile){
-    return await this.appService.uploadFile(fileInfo.access_token, fileInfo.folder, fileInfo.fileId, fileInfo.content);
+    return await this.appService.uploadFile(fileInfo.access_token, fileInfo.folder, fileInfo.fileId, fileInfo.content, fileInfo.isFavorite);
+  }
+
+  @Post('fav-this')
+  async toggleFav(@Body() fileInfo: UploadFile) {
+    return await this.appService.toggleFav(fileInfo.access_token, fileInfo.folder, fileInfo.fileId, fileInfo.content, fileInfo.isFavorite);
   }
 }

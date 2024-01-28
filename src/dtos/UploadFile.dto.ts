@@ -3,4 +3,5 @@ export class UploadFile{
     folder: string;
     fileId: string;
     content: string;
+    isFavorite: boolean;
 }
