@@ -10,17 +10,34 @@ export class AuthService {
 
     async login(app, email: string, pass: string) {
         try {
-            const success = await app.auth(email, pass);
-            //console.log("Yeah");
-            const payload = { sub: success };
+            const response = await app.auth(email, pass);
+            // const payload = { sub: success };
 
-            return { 
-                "access_token": await this.jwtService.signAsync(payload),
-            };
+            // return { 
+            //     "access_token": await this.jwtService.signAsync(payload),
+            // };
+            if (response.message == "success") {
+                const payload = { sub: response.uid };
+
+                return {
+                    "access_token" : await this.jwtService.signAsync(payload),
+                    "message" : "success"
+                }
+            }
+
+            return {
+                "access_token" : "",
+                "message" : response.message,
+            }
+
         } catch (error) {
-            return { "message": false} ;
+            return { 
+                "access_token" : "",
+                "message": "Error, Try Again",
+            } ;
         }
     }
+
 
     async verify(app, access_token: string) {
         try {
@@ -29,6 +46,33 @@ export class AuthService {
             throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
         }
 
+    }
+
+    async createNewUser(app, email: string, pass: string) {
+        try {
+            const response = await app.createUser(email, pass);
+
+            if (await response.message == "success") {
+                const payload = { sub: response.uid };
+
+                return {
+                    "access_token" : await this.jwtService.signAsync(payload),
+                    "message" : "success"
+                }
+            }
+
+            return {
+                "access_token" : "",
+                "message" : response.message,
+            }
+
+
+        } catch (error) {
+            return { 
+                "access_token" : "",
+                "message": "Error, Try Again",
+            } ;
+        }
     }
 
 }

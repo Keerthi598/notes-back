@@ -1,13 +1,11 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { response } from "express";
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword  } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword  } from "firebase/auth";
 import { getDoc, getFirestore } from "firebase/firestore";
 import { doc, setDoc, collection, addDoc } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { Timestamp } from "firebase/firestore";
 import axios from 'axios';
-
 
 
 
@@ -45,14 +43,20 @@ export class FirebaseFuncService {
         .then((userCredential) => {
           // Signed in 
           const user = userCredential.user;
-          return user.uid;
+          return  {
+            uid: user.uid,
+            message: "success"
+          };
         })
 
         .catch((error) => {
           // Login failed
           const errorCode = error.code;
           const errorMessage = error.message;
-          throw new UnauthorizedException();
+          return {
+            uid: "",
+            message: errorCode,
+          }
         });
     }
 
@@ -66,7 +70,6 @@ export class FirebaseFuncService {
 
     // All folders the user has
     async getFoldersAll(uid: string) {
-
         const docRef = doc(this.db, uid, "folName");
         const docSnap = await getDoc(docRef);
         
@@ -170,7 +173,7 @@ export class FirebaseFuncService {
             noteHeadCurr = content.slice(0, 50);
         }
 
-        noteHeadCurr += "...";
+        //noteHeadCurr += "...";
 
         const data = {
             date: time.now(),
@@ -204,7 +207,7 @@ export class FirebaseFuncService {
         else {
             noteHeadCurr = content.slice(0, 50);
         }
-        noteHeadCurr += "...";
+        //noteHeadCurr += "...";
 
         const data = {
             date: time.now(),
@@ -234,9 +237,48 @@ export class FirebaseFuncService {
         return true;
     }
 
-    
 
+    async toggleFavoriteOff(uid: string, folderName: string, fileIdCurr, content: string) {
+        var time = Timestamp;
+        var noteHeadCurr: string = "";
+        if (content.length <= 50){
+            noteHeadCurr = content;
+        }
+        else {
+            noteHeadCurr = content.slice(0, 50);
+        }
+        //noteHeadCurr += "...";
 
+        const data = {
+            date: time.now(),
+            folder: folderName,
+            noteHead: noteHeadCurr,
+            favorite: false,
+        }
+
+        await this.getDisplayNotes(uid, folderName).then(
+            (allFilesResp) => {
+                allFilesResp.notesRefMap[fileIdCurr] = data;
+
+                setDoc(doc(this.db, uid, folderName), allFilesResp);
+            }
+        )
+
+        await this.getDisplayNotes(uid, "favorites").then(
+            (favFilesResp) => {
+                delete favFilesResp.favFileMap[fileIdCurr];
+
+                setDoc(doc(this.db, uid, "favorites"), favFilesResp);
+            }
+        )
+
+        await this.UpdateDash(uid, fileIdCurr, data);
+
+        return true;
+    }
+
+    // Update this user's dashboard
+    // The recent 10 files saved 
     async UpdateDash(uid: string, fileIdCurr: string, data) {
         var currDashResp = await this.getDashFiles(uid);
         var currDash = await currDashResp.dashRef;
@@ -276,4 +318,97 @@ export class FirebaseFuncService {
 
     }
 
+
+    async createUser(email: string, pass: string) {
+        //Create Account
+        return createUserWithEmailAndPassword(this.authFire, email, pass)
+        .then(async(userCredential) => {
+            const user = userCredential.user;
+            await this.newUserInit(user.uid);
+            return  {
+                uid: user.uid,
+                message: "success"
+            };
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            return {
+                uid: "",
+                message: errorCode
+            }
+        })
+    }
+
+    async newUserInit(uid: string) {
+        //Create Default Folder
+        const newFolder = { notesRefMap : {} };
+        await setDoc(doc(this.db, uid, "Default"), newFolder);
+
+        // Create folName and add Default to it
+        const newFolCollection = {names: ["Default"]};
+        await setDoc(doc(this.db, uid, "folName"), newFolCollection);
+
+        // Create empty favorites folder
+        const newFavFolder = { favFileMap : {} };
+        await setDoc(doc(this.db, uid, "favorites"), newFavFolder);
+
+        // Create new dashboard
+        const newDash = { dashRef : []};
+        await setDoc(doc(this.db, uid, "DashBoard"), newDash);
+
+        return true;
+    }
+
+
+
+    async deleteUserFile(uid: string, folderName: string, fileIdCurr: string, fav: boolean) {
+        
+        // Delete from favorite if Favorites
+        if (fav) {
+            await this.getDisplayNotes(uid, "favorites").then(
+                (favFilesResp) => {
+                    delete favFilesResp.favFileMap[fileIdCurr];
+                    setDoc(doc(this.db, uid, "favorites"), favFilesResp);
+                }
+            ) .catch(error => {
+                console.log(error);
+            }
+            )
+        }
+
+        // Delete from Folder
+        await this.getDisplayNotes(uid, folderName).then(
+            (folResp) => {
+                delete folResp.notesRefMap[fileIdCurr];
+
+                setDoc(doc(this.db, uid, folderName), folResp);
+            }
+        )
+
+        // Delete from Dashboard
+        var currDashResp = await this.getDashFiles(uid);
+        var currDash = await currDashResp.dashRef;
+
+        for (let i = 0; i < currDash.length; i++) {
+            if (currDash[i].fileId == fileIdCurr){
+                currDash.splice(i, 1);
+                break;
+            }
+        }
+
+        currDashResp.dashRef = currDash;
+        await setDoc(doc(this.db, uid, "DashBoard"), currDashResp);
+
+
+        // Delete from Storage
+        const storageRef = ref(this.storage, uid + "/" + folderName + "/" + fileIdCurr);
+        return deleteObject(storageRef).then(
+            () => {
+                return true;
+            }
+        ).catch((error) => {
+            return false;
+        });
+    }
 }

@@ -83,11 +83,21 @@ export class UserService {
         fileId += ".txt";
 
         if(isFavorite)
-        {
-            
-            app.toggleIsFavorite(uid, folderName, fileId, content);
-            return true;
+        {      
+            await app.toggleIsFavorite(uid, folderName, fileId, content);
         }
+
+        else if (!isFavorite){
+            await app.toggleFavoriteOff(uid, folderName, fileId, content);
+        }
+
         return true;
+    }
+
+
+    async deleteFile(app, uid: string, folderName: string, fileId: string, isFavorite: boolean) {
+        //fileId += ".txt";
+
+        return await app.deleteUserFile(uid, folderName, fileId, isFavorite);
     }
 }

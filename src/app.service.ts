@@ -70,5 +70,16 @@ export class AppService {
       return await this.user.toggleFav(this.app, uid.sub, folderName, fileId, content, isFavorite);
     }
 
+
+
+    async createNewUser(email: string, pass: string) {
+      return await this.auth.createNewUser(this.app, email, pass);
+    }
+
+
+    async deleteFile(access_token: string, folderName: string, fileId: string, isFavorite: boolean) {
+      const uid = await this.auth.verify(this.app, access_token);
+      return await this.user.deleteFile(this.app, uid.sub, folderName, fileId, isFavorite);
+    }
     
 }

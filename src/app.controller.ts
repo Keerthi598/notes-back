@@ -22,11 +22,21 @@ export class AppController {
     }
   }
 
+  @Post('sign-up')
+  async createUser(@Body() userAuth: UserAuth) {
+    try{
+      return await this.appService.createNewUser(userAuth.email, userAuth.pass);
+    }
+    catch(error)
+    {
+
+    }
+  }
+
   @Post('user-fol')
   async getAllFol(@Body() jwtToken: JwtDto){
     return await this.appService.getFolAll(jwtToken.access_token);
   }
-
 
   @Post('user-dash')
   async getDashFolders(@Body() jwtToken: JwtDto) {
@@ -66,5 +76,10 @@ export class AppController {
   @Post('fav-this')
   async toggleFav(@Body() fileInfo: UploadFile) {
     return await this.appService.toggleFav(fileInfo.access_token, fileInfo.folder, fileInfo.fileId, fileInfo.content, fileInfo.isFavorite);
+  }
+
+  @Post('delete-file')
+  async deleteFile(@Body() fileInfo: UploadFile) {
+    return await this.appService.deleteFile(fileInfo.access_token, fileInfo.folder, fileInfo.fileId, fileInfo.isFavorite);
   }
 }
