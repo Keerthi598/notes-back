@@ -35,5 +35,6 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 
-NotesFireBaseLog.json
+NotesAdminFb.json
+NotesClientFb.json
 src/auth/constants.ts

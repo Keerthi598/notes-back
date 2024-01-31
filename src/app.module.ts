@@ -7,16 +7,19 @@ import { UserModule } from './user/user.module';
 import { UserService } from './user/user.service';
 import { AuthModule } from './auth/auth.module';
 import { AuthService } from './auth/auth.service';
+import { AdminModule } from './admin/admin.module';
+import { AdminService } from './admin/admin.service';
 
 
 @Module({
-  imports: [FirebaseFuncModule, UserModule, AuthModule],
+  imports: [FirebaseFuncModule, UserModule, AuthModule, AdminModule],
   controllers: [AppController],
   providers: [
     AppService,
     FirebaseFuncService, 
     AuthService, 
     UserService,
+    AdminService
   ],
 })
 

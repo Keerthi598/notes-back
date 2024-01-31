@@ -1,11 +1,12 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword  } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updatePassword } from "firebase/auth";
 import { getDoc, getFirestore } from "firebase/firestore";
 import { doc, setDoc, collection, addDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { Timestamp } from "firebase/firestore";
 import axios from 'axios';
+
 
 
 
@@ -19,15 +20,7 @@ export class FirebaseFuncService {
 
 
     initialize() {
-        const firebaseConfig = {
-          apiKey: "AIzaSyDPPrLPrZBjsggYEGos2PPBJwkw_mjN0ck",
-          authDomain: "notes-a7479.firebaseapp.com",
-          projectId: "notes-a7479",
-          storageBucket: "notes-a7479.appspot.com",
-          messagingSenderId: "946934545824",
-          appId: "1:946934545824:web:86a106b633ca6ce069f8c5",
-          measurementId: "G-W8WDYYCDPY"
-        };    
+        const firebaseConfig = require('../../NotesClientFb.json'); 
         
         const app = initializeApp(firebaseConfig);
 
@@ -403,6 +396,7 @@ export class FirebaseFuncService {
 
         // Delete from Storage
         const storageRef = ref(this.storage, uid + "/" + folderName + "/" + fileIdCurr);
+        //console.log(uid + "/" + folderName + "/" + fileIdCurr);
         return deleteObject(storageRef).then(
             () => {
                 return true;
@@ -411,4 +405,7 @@ export class FirebaseFuncService {
             return false;
         });
     }
+
+    
+    
 }

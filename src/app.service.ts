@@ -12,6 +12,7 @@ export class AppService {
                 private auth: AuthService,
                 private user: UserService) {
         this.app = fire.initialize();
+        this.auth.initAdmin();
     }
 
     async logIn(email: string, pass: string) {
@@ -82,4 +83,8 @@ export class AppService {
       return await this.user.deleteFile(this.app, uid.sub, folderName, fileId, isFavorite);
     }
     
+
+    async getUserEmail(access_token) {
+      return await this.auth.getEmail(access_token);
+    }
 }

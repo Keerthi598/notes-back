@@ -82,4 +82,10 @@ export class AppController {
   async deleteFile(@Body() fileInfo: UploadFile) {
     return await this.appService.deleteFile(fileInfo.access_token, fileInfo.folder, fileInfo.fileId, fileInfo.isFavorite);
   }
+
+
+  @Post('get-email')
+  async getUserEmail(@Body() jwt: JwtDto) {
+    return this.appService.getUserEmail(jwt.access_token);
+  }
 }
