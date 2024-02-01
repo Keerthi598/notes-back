@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updatePassword } from "firebase/auth";
-import { getDoc, getFirestore } from "firebase/firestore";
+import { deleteDoc, deleteField, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 import { doc, setDoc, collection, addDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { Timestamp } from "firebase/firestore";
@@ -406,6 +406,40 @@ export class FirebaseFuncService {
         });
     }
 
-    
-    
+    async deleteUserFolder(uid: string, folderName: string) {
+        // Delete the fields of the folder in fireStore
+        var folderRef = doc(this.db, uid, folderName);
+
+        await updateDoc(folderRef, {
+            notesRefMap: deleteField()
+        });
+        
+
+        // Delete the folder from the folderNames
+        const allFolders = await this.getFoldersAll(uid);
+        var dashfiles = await allFolders.names;
+
+        for (let i = 0; i < dashfiles.length; i++) {
+            if (dashfiles[i] == folderName){
+                dashfiles.splice(i, 1);
+                break;
+            }
+        }
+
+        allFolders.names = dashfiles;
+        await setDoc(doc(this.db, uid, "folName"), allFolders);
+
+        // Delete the folder itself
+        await deleteDoc(folderRef);
+
+
+        //
+        // Since all files in the folder
+        // MUST BE DELETED 
+        // in order to delete a folder, 
+        // there should be no need to delete
+        // from the storage :)
+        //
+        return true;
+    }
 }

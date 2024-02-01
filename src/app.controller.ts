@@ -5,6 +5,7 @@ import { JwtDto } from './dtos/Jwt.dto';
 import { UserFolder } from './dtos/UserFolder.dto';
 import { GetFile } from './dtos/GetFile.dto';
 import { UploadFile } from './dtos/UploadFile.dto';
+import { UserUpdatePass } from './dtos/UserPassUpDate.dto';
 
 @Controller()
 export class AppController {
@@ -53,15 +54,37 @@ export class AppController {
     return await this.appService.getFolderFiles(folderInfo.access_token, folderInfo.folder);
   }
 
+  //
+  //
+  //
+
   @Post('create-folder')
   async createFolder(@Body() folderInfo: UserFolder){
     return await this.appService.createFolder(folderInfo.access_token, folderInfo.folder);
   }
 
+  @Post('delete-folder')
+  async deleteUserFolder(@Body() folderInfo: UserFolder) {
+    return await this.appService.deleteFolder(folderInfo.access_token, folderInfo.folder);
+  }
+
+  //
+  //
+  //
+
   @Post('create-file')
   async createFile(@Body() folderInfo: UserFolder){
     return await this.appService.createFile(folderInfo.access_token, folderInfo.folder);
   }
+
+  @Post('delete-file')
+  async deleteFile(@Body() fileInfo: UploadFile) {
+    return await this.appService.deleteFile(fileInfo.access_token, fileInfo.folder, fileInfo.fileId, fileInfo.isFavorite);
+  }
+
+  //
+  //
+  //
 
   @Post('get-file')
   async getFile(@Body() fileInfo: GetFile){
@@ -78,14 +101,16 @@ export class AppController {
     return await this.appService.toggleFav(fileInfo.access_token, fileInfo.folder, fileInfo.fileId, fileInfo.content, fileInfo.isFavorite);
   }
 
-  @Post('delete-file')
-  async deleteFile(@Body() fileInfo: UploadFile) {
-    return await this.appService.deleteFile(fileInfo.access_token, fileInfo.folder, fileInfo.fileId, fileInfo.isFavorite);
-  }
-
 
   @Post('get-email')
   async getUserEmail(@Body() jwt: JwtDto) {
     return this.appService.getUserEmail(jwt.access_token);
   }
+
+  @Post('change-cred')
+  async changeUserCred(@Body() newInfo: UserUpdatePass) {
+    return this.appService.changeUserPass(newInfo.access_token, newInfo.newPass);
+  }
+
+  
 }

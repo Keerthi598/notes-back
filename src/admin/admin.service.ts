@@ -43,5 +43,18 @@ export class AdminService {
             return "";
         })
     }
+
+    async updatePassWord(uid: string, newPassword: string) {
+        return admin.auth()
+        .updateUser(uid, {
+            password: newPassword,
+        })
+        .then((userRecord) => {
+            return { "message" :  true};
+        })
+        .catch((error) => {
+            return { "message" :  false};
+        })
+    }
 }
  

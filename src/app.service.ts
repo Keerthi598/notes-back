@@ -44,17 +44,43 @@ export class AppService {
       return await this.user.getFolderFiles(this.app, uid.sub, folder);
     }
 
+    //
+    //
+    //
+
+    // Create Folder
     async createFolder(access_token: string, folderName: string) {
       const uid = await this.auth.verify(this.app, access_token);
 
       return await this.user.createFolder(this.app, uid.sub, folderName);
     }
 
+    // Delete Folder
+    async deleteFolder(access_token: string, folderName: string) {
+      const uid = await this.auth.verify(this.app, access_token);
+
+      return await this.user.deleteFolder(this.app, uid.sub, folderName);
+    }
+
+    //
+    //
+    //
+
+    // Create File
     async createFile(access_token: string, folderName: string) {
       const uid = await this.auth.verify(this.app, access_token);
 
       return await this.user.createFile(this.app, uid.sub, folderName);
     }
+
+    // Delete File
+    async deleteFile(access_token: string, folderName: string, fileId: string, isFavorite: boolean) {
+      const uid = await this.auth.verify(this.app, access_token);
+      return await this.user.deleteFile(this.app, uid.sub, folderName, fileId, isFavorite);
+    }
+
+
+
 
     async getFile(access_token: string, folderName: string, fileId: string) {
       const uid = await this.auth.verify(this.app, access_token);
@@ -76,15 +102,14 @@ export class AppService {
     async createNewUser(email: string, pass: string) {
       return await this.auth.createNewUser(this.app, email, pass);
     }
-
-
-    async deleteFile(access_token: string, folderName: string, fileId: string, isFavorite: boolean) {
-      const uid = await this.auth.verify(this.app, access_token);
-      return await this.user.deleteFile(this.app, uid.sub, folderName, fileId, isFavorite);
-    }
     
 
-    async getUserEmail(access_token) {
+    async getUserEmail(access_token: string) {
       return await this.auth.getEmail(access_token);
     }
+
+    async changeUserPass(access_token: string, newPass: string) {
+      return await this.auth.changePass(access_token, newPass);
+    }
+
 }

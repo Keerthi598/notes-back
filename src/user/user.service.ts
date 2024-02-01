@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { FirebaseFuncService } from 'src/firebase-func/firebase-func.service';
 import { nanoid } from 'nanoid';
+import { clear } from 'console';
+import { clearIndexedDbPersistence } from 'firebase/firestore';
 
 @Injectable()
 export class UserService {
@@ -99,5 +101,10 @@ export class UserService {
         //fileId += ".txt";
 
         return await app.deleteUserFile(uid, folderName, fileId, isFavorite);
+    }
+
+
+    async deleteFolder(app, uid: string, folderName: string) {
+        return await app.deleteUserFolder(uid, folderName);
     }
 }

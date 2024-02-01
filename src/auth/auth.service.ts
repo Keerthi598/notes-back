@@ -96,4 +96,9 @@ export class AuthService {
         }
     }
 
+    async changePass(access_token: string, newPass: string) {
+        var uid = await this.jwtService.verifyAsync(access_token);
+        return await this.adminService.updatePassWord(uid.sub, newPass);
+    }
+
 }
