@@ -1,11 +1,13 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updatePassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { deleteDoc, deleteField, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 import { doc, setDoc, collection, addDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { Timestamp } from "firebase/firestore";
 import axios from 'axios';
+import { error } from "console";
+
 
 
 
@@ -69,7 +71,7 @@ export class FirebaseFuncService {
         return docSnap.data();
     }
 
-    //All the files in teh favorite folder
+    //All the files in the favorite folder
     async getFavAll(uid: string) {
         const docRef = doc(this.db, uid, "favorites");
         const docSnap = await getDoc(docRef);
@@ -354,7 +356,6 @@ export class FirebaseFuncService {
     }
 
 
-
     async deleteUserFile(uid: string, folderName: string, fileIdCurr: string, fav: boolean) {
         
         // Delete from favorite if Favorites
@@ -441,5 +442,59 @@ export class FirebaseFuncService {
         // from the storage :)
         //
         return true;
+    }
+
+
+    async sendResetLink(email: string) {
+        return await sendPasswordResetEmail(this.authFire, email)
+        .then((resp) => {
+            return { message : "Success"}
+        })
+        .catch((error) => {
+            return { message : error.code }
+        })
+    }
+
+
+
+    async deleteUser(uid: string) {
+        // Get all the folders
+        await this.getFoldersAll(uid)
+        .then(
+            (foldersResp) => {
+                var folders: Array<string> = foldersResp.names;
+
+                // Delete the collection of folder names
+                var folRef = doc(this.db, uid, "folName")
+                deleteDoc(folRef);
+                
+                // Loop through each folder
+                for (let i = 0; i < folders.length; i++) {
+                    this.deleteFolderContents(uid, folders[i]);
+                }
+            }
+        )
+
+        // Empty the favorites
+        var favRef = doc(this.db, uid, "favorites");
+        await deleteDoc(favRef);
+
+        // Delete the dashboard
+        var dashRef = doc(this.db, uid, "DashBoard");
+        await deleteDoc(dashRef);
+    }
+
+    async deleteFolderContents(uid: string, folName: string) {
+        await this.getDisplayNotes(uid, folName)
+        .then( resp => {
+            var folRef = doc(this.db, uid, folName);
+            deleteDoc(folRef);
+            var refStorage = ref(this.storage, "");
+
+            for(let key in resp.notesRefMap) {
+                refStorage = ref(this.storage, uid + "/" + folName + "/" + key);
+                deleteObject(refStorage);
+            }
+        })
     }
 }

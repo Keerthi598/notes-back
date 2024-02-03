@@ -101,4 +101,19 @@ export class AuthService {
         return await this.adminService.updatePassWord(uid.sub, newPass);
     }
 
+    async deleteUser(app, access_token: string) {
+        try {
+            var uid = await this.jwtService.verifyAsync(access_token);
+            var resp = await this.adminService.deleteUser(await uid.sub);
+
+            if (resp) {
+                app.deleteUser(await uid.sub);
+            }
+
+            return;
+        } catch (error) {
+            return;
+        }
+    }
+
 }

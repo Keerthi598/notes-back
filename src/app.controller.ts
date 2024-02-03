@@ -112,5 +112,15 @@ export class AppController {
     return this.appService.changeUserPass(newInfo.access_token, newInfo.newPass);
   }
 
+  @Post('reset-pass')
+  async resetPass(@Body() userAuth: UserAuth) {
+    return await this.appService.ResetPassWord(userAuth.email);
+  }
+
+
+  @Post('delete-user')
+  async deleteUser(@Body() jwt: JwtDto) {
+    this.appService.deleteUser(jwt.access_token);
+  }
   
 }

@@ -112,4 +112,14 @@ export class AppService {
       return await this.auth.changePass(access_token, newPass);
     }
 
+    async ResetPassWord(email: string) {
+      return await this.app.sendResetLink(email);
+    }
+
+
+    async deleteUser(access_token: string) {
+      // const uid = await this.auth.verify(this.app, access_token);
+      // this.app.deleteUser(uid.sub);
+      this.auth.deleteUser(this.app, access_token);
+    }
 }

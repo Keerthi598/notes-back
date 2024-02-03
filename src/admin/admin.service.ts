@@ -3,6 +3,8 @@ import admin from 'firebase-admin';
 import { initializeApp } from 'firebase-admin/app';
 import { applicationDefault, cert } from "firebase-admin/app";
 import { auth } from 'firebase-admin';
+import { deleteUser } from 'firebase/auth';
+import { error } from 'console';
 
 
 @Injectable()
@@ -54,6 +56,16 @@ export class AdminService {
         })
         .catch((error) => {
             return { "message" :  false};
+        })
+    }
+
+    async deleteUser(uid: string) {
+        return admin.auth().deleteUser(uid)
+        .then( () => {
+            return true;
+        })
+        .catch( (error) => {
+            return false;
         })
     }
 }
