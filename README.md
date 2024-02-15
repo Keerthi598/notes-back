@@ -53,4 +53,4 @@ Contact rameshke@msu.edu
 
 ## License
 
-Nest is [MIT licensed]().
+Nest is [MIT licensed](LICENSE).
