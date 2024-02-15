@@ -53,4 +53,4 @@ Contact rameshke@msu.edu
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+Notes Scribe is [MIT licensed](LICENSE).
