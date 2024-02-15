@@ -1,15 +1,22 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { AppService } from './app.service';
-import { UserAuth } from './dtos/userAuth.dto';
+import { AppService } from './app.service'; 
 import { JwtDto } from './dtos/Jwt.dto';
 import { UserFolder } from './dtos/UserFolder.dto';
 import { GetFile } from './dtos/GetFile.dto';
 import { UploadFile } from './dtos/UploadFile.dto';
 import { UserUpdatePass } from './dtos/UserPassUpDate.dto';
+import { UserAuth } from './dtos/UserAuth.dto';
 
 @Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {}
+
+
+  @Get()
+  async GetHello() {
+    return "Hello World";
+  }
+
 
   @Post('sign-in')
   async logIn(@Body() userAuth: UserAuth) {
@@ -121,6 +128,7 @@ export class AppController {
   @Post('delete-user')
   async deleteUser(@Body() jwt: JwtDto) {
     this.appService.deleteUser(jwt.access_token);
+    return true;
   }
   
 }

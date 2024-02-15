@@ -26,6 +26,13 @@ lerna-debug.log*
 *.launch
 .settings/
 *.sublime-workspace
+.aws-sam/
+.aws-sam/build/*
+.aws-sam/build/MyNestJSLambdaFunction
+.aws-sam/
+packaged.yaml
+samconfig.toml
+*.db
 
 # IDE - VSCode
 .vscode/*
@@ -38,3 +45,7 @@ lerna-debug.log*
 NotesAdminFb.json
 NotesClientFb.json
 src/auth/constants.ts
+
+.dockerignore
+Dockerfile
+.gcloudignore

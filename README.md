@@ -1,73 +1,56 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Notes Scribe
+     
+<img src = "imgs/Logo.png" height="100">
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+[Notes Scribe](https://notes-scribe.com) is a web app made for creating and organizing notes.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+It can be accessed through `https://notes-scribe.com`
 
-## Description
+<img src="imgs/Screenshot 2024-02-14 at 17-04-59 Notes Srcibe.png">
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## About
 
-## Installation
+This notes web app is designed to streamline your organization process effortlessly. With intuitive features and a user-friendly interface, it's the perfect tool for keeping your notes in order.
 
-```bash
-$ npm install
-```
+## Tech Stack
 
-## Running the app
 
-```bash
-# development
-$ npm run start
+### Frontend
+|       |  |
+| ----------- | ----------- |
+| <a href="https://angular.io/"><img src="https://angular.io/assets/images/logos/angular/angular.svg" width="30" /></a>           | Angular       |
+| <a href="https://tailwindcss.com/"><img src="https://tailwindcss.com/_next/static/media/tailwindcss-mark.3c5441fc7a190fb1800d4a5c7f07ba4b1345a9c8.svg" width = 30></a>   | Tailwind    |
+| <a href="https://aws.amazon.com/what-is-cloud-computing"><img src="https://d0.awsstatic.com/logos/powered-by-aws-white.png" alt="Powered by AWS Cloud Computing" height = "20"></a>            | Aws      |
+|            |       |
 
-# watch mode
-$ npm run start:dev
+### Backend
+|        |  |
+| ----------- |  ------------ |
+| <a href="https://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="30" alt="Nest Logo" /></a>| NestJS       |
+| <a href="https://cloud.google.com/?hl=en"><img src="https://lh3.googleusercontent.com/VEnnK2SyklusfxZ3dIYjlQH3xSwK2BFSJ69TFQ9g8HjM6m3CouRlTia5FW3z3GS0x83WC9TylZCaA9Jf_2kmr7mXxI9_HYLZTFy_bg" width = "30"></a> | Google Cloud |
+| <a href="https://firebase.google.com/" target="blank"><img src="https://firebase.google.com/static/downloads/brand-guidelines/SVG/logo-logomark.svg" height = 30></a> | FireBase |
+|            |       |
 
-# production mode
-$ npm run start:prod
-```
+### Design
+|        |  |
+| ----------- | ------------- |
+| <a href="https://www.figma.com"><img src="https://www.svgrepo.com/show/303210/figma-1-logo.svg" width="30" /></a>               | Figma         |
+| <img src="https://img.shields.io/badge/Font_Awesome-339AF0?style=for-the-badge&logo=fontawesome&logoColor=white">  | Font Awesome  |
+|            |       |
 
-## Test
+The front end is hosted on AWS S3 buckets.
 
-```bash
-# unit tests
-$ npm run test
+The backend is deployed on a server on Google App Engine.
 
-# e2e tests
-$ npm run test:e2e
+[Frontend Repository](https://github.com/Keerthi598/notes)
 
-# test coverage
-$ npm run test:cov
-```
+[Backend Repository]()
 
-## Support
+## Help 
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Contact rameshke@msu.edu 
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+Nest is [MIT licensed]().

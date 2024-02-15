@@ -118,8 +118,6 @@ export class AppService {
 
 
     async deleteUser(access_token: string) {
-      // const uid = await this.auth.verify(this.app, access_token);
-      // this.app.deleteUser(uid.sub);
       this.auth.deleteUser(this.app, access_token);
     }
 }
