@@ -6,10 +6,6 @@ import { doc, setDoc, collection, addDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import { Timestamp } from "firebase/firestore";
 import axios from 'axios';
-import { error } from "console";
-
-
-
 
 
 @Injectable()

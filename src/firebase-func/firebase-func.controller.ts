@@ -7,8 +7,5 @@ export class FirebaseFuncController {
 
     @Get('This')
     getThis(): string {return "Hi";}
-    // work() {
-    //     this.firebaseFuncService.initializeFirebase();
-    // }
 
 }
